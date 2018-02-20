@@ -29,7 +29,7 @@ Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioi
 
 ### Télécharger les données du TP: 
 
-    wget git@github.com:dridk/tp_snakemake.git
+    git clone git@github.com:dridk/tp_snakemake.git
 
 ### Question : 
 - Combien de bases dans genom/ecoli.fa ? 
