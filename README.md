@@ -126,7 +126,7 @@ Crée un fichier Snakefile. Ce fichier contient des "règles" permettant de déf
 
 #### Question 8 : Créer toutes les règles jusqu'au VCF
 
-Essayer de créer les autres règles jusqu'au vcf en partant des commandes défini plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
+Essayer de créer les autres règles jusqu'au vcf en partant des commandes définies plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
 Vous pouvez alors demander à snakemake comment générer un fichier donnée en argument:
 
     snakemake -np sample1.vcf
