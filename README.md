@@ -18,8 +18,6 @@ Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioi
     conda config --add channels conda-forge
     conda config --add channels bioconda
 
-Crée un environnement et installez les logiciels 
-
 ### Crée un environnement appelé "master_big" 
         conda create -n master_big
 
