@@ -117,14 +117,14 @@ Crée un fichier Snakefile. Ce fichier contient des "règles" permettant de déf
         shell:
             "bwa mem genom/ecoli.fa {input} > {output}"
 
-#### Question 6: Tester votre règle
+#### Question 7: Tester votre règle
 -p : Afficher les commandes
 -n : Ne pas les exécuter 
 
     snakemake -np sample3.sam  
     snakemake -np sample4.sam 
 
-### Question 7 : Créer toutes les règles jusqu'au VCF
+#### Question 8 : Créer toutes les règles jusqu'au VCF
 
 Essayer de créer les autres règles jusqu'au vcf en partant des commandes défini plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
 Vous pouvez alors demander à snakemake comment générer un fichier donnée en argument:
@@ -172,5 +172,5 @@ Executer l'ensemble du pipeline :
 
     snakemake -p allsample.vcf --cores 4 
 
-### Question: 
+#### Question 9: 
 Quelles sont les mutations retrouvées ? 
