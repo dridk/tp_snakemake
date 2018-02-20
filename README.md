@@ -36,7 +36,7 @@ Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioi
 - Combien de reads dans sample1.fastq ? 
 
 ## Création d'un pipeline brut
-Nous allons créer un pipeline grâce à snakemake. Les étapes pour un échantillon (sample1.fastq) sont les suivantes : 
+Les étapes pour un échantillon (sample1.fastq) sont les suivantes : 
 
 - Indexer le génome 
 - Aligner un fastq sur le génome de référence  (*.fastq > *.sam)
