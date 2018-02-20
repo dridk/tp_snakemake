@@ -14,7 +14,9 @@ Dans la situation (très fréquente) ou vous n'êtes pas administrateur, install
 
 Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioinformatiques.
 
-    conda config --add channels defaults     conda config --add channels conda-forge     conda config --add channels bioconda
+    conda config --add channels defaults
+    conda config --add channels conda-forge
+    conda config --add channels bioconda
 
 Crée un environnement et installez les logiciels 
 
