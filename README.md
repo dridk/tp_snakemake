@@ -6,11 +6,11 @@ Pour cet exercice, vous avez besoin de : samtools, bwa,bcftools,snakemake.
 
     sudo apt-get install samtools bwa bcftools snakemake
 
-Dans la situation (très fréquente) ou vous n'êtes pas administrateur, installer conda depuis le site :https://conda.io/miniconda.html
+Dans la situation (très fréquente) ou vous n'êtes pas administrateur, installer [conda](https://conda.io/miniconda.html):
 
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh     chmod +x Miniconda3-latest-Linux-x86_64.sh      ./Miniconda3-latest-Linux-x86_64.sh
 
-Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioinformatiques de https://bioconda.github.io/.
+Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioinformatiques.
 
     conda config --add channels defaults     conda config --add channels conda-forge     conda config --add channels bioconda
 
