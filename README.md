@@ -16,16 +16,16 @@ Ajouter les dépôts bioconda pour bénéficier de l'ensemble des logiciels bioi
 
 Crée un environnement et installez les logiciels 
 
-# Crée un environnement appelé "master_big" 
+### Crée un environnement appelé "master_big" 
         conda create -n master_big
 
-# Activer l'environnement   
+### Activer l'environnement   
        source activate master_big
 
-# Installer les applications    
+### Installer les applications    
       conda install bwa samtools snakemake bcftools 
 
-Télécharger les données du TP: 
+### Télécharger les données du TP: 
 
     wget git@github.com:dridk/tp_snakemake.git
 
