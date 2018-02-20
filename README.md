@@ -148,7 +148,7 @@ Vous pouvez alors demander à snakemake comment générer un fichier en lui pass
     snakemake -pF sample1.vcf 
 
 ## Combiner les vcfs 
-Créer une dernière règle pour combiner l'ensemble des fichiers vcf 
+Créer une dernière règle pour combiner l'ensemble des fichiers vcf. Et mettez celle-ci tout en haut de votre fichier Snakefile. 
 
     rule mergeAll : 
         input:
@@ -168,9 +168,9 @@ Afficher le graphe d'exécution. Vous aurez peut-être besoin de graphviz.
     sudo apt install graphviz
     snakemake allsample.vcf --dag|dot|display 
 
-Executer l'ensemble du pipeline : 
+Exécuter l'ensemble du pipeline : 
 
-    snakemake -p allsample.vcf --cores 4 
+    snakemake -p --cores 4 
 
 #### Question 9: 
 Quelles sont les mutations retrouvées ? 
