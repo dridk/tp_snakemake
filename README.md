@@ -40,8 +40,8 @@ Nous allons créer un pipeline grâce à snakemake. Les étapes pour un échanti
 
 - Indexer le génome 
 - Aligner un fastq sur le génome de référence  (*.fastq > *.sam)
-- Trier par position les reads alignés ( *.sam > *.sort.sam)
 - Convertir le SAM en BAM (*.sam > *.bam)
+- Trier par position les reads alignés ( *.bam > *.sort.bam)
 - Indexer le bam ( *.bam > *.bai )
 - Caller les variants ( *.bam > *.vcf)
 
