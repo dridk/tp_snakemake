@@ -134,7 +134,7 @@ Vous pouvez alors demander à snakemake comment générer un fichier en lui pass
     snakemake -np sample3.vcf
     snakemake -np sample1.vcf sample2.vcf sample3.vcf sample4.vcf
 
-## Executer sur 4 coeurs
+## Exécuter sur 4 coeurs
 
     snakemake -p sample1.vcf sample2.vcf sample3.vcf sample4.vcf --cores 4
 
