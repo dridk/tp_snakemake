@@ -46,17 +46,25 @@ rule variantCalling:
 		"bcftools call -c -v {input} > {output}"
 
 
+rule bgzip:
+	input:
+		"{sample}.vcf"
+	output:
+		"{sample}.vcf.gz",
+		"{sample}.vcf.gz.tbi"
+	shell:
+		"bgzip {input}; tabix {output[0]}"
+
 rule mergeAll : 
 	input:
-		"sample1.vcf",
-		"sample2.vcf",
-		"sample3.vcf",
-		"sample4.vcf",
-		"sample5.vcf"
+		"sample1.vcf.gz",
+		"sample2.vcf.gz",
+		"sample3.vcf.gz",
+		"sample4.vcf.gz",
+		"sample5.vcf.gz"
 		
 	output:
-		"allsample.vcf"
+		"allsample.vcf.gz"
 	shell:
-		"cat {input} > {output}"
-
+		"bcftools merge {input}|bgzip> {output}"
 
