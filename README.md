@@ -57,7 +57,7 @@ Les étapes pour obtenir les variants de l'échantillon (sample1.fastq) sont les
     bwa mem genom/ecoli.fa sample1.fastq > sample1.sam 
 
 #### Question 3 : 
-Afficher la position (colonne 4) et la sequence (colonne 10) des reads alignés.
+Afficher la position (colonne 4) et la séquence (colonne 10) des reads alignés.
 Qu'observez vous au niveau des positions ?    
 
     samtools view -F4 sample1.sam |cut -f4,10
@@ -74,7 +74,7 @@ Quel est l’intérêt d'un fichier binaire ?
     samtools sort sample1.bam > sample1.sort.bam 
 
 #### Question 5: 
-Refaite la commande de la question 3 sur le fichier sample1.sort.bam généré. 
+Refaire la commande de la question 3 sur le fichier sample1.sort.bam généré. 
 
 ### Index du bam 
 
@@ -105,7 +105,7 @@ Question:
 
 ## Création du pipeline avec snakemake 
 
-Crée un fichier Snakefile. Ce fichier contient des "règles" permettant de définir comment passer d'un fichier à un autre. Ces règles sont dans l'ordre que vous voulez. En demandant à snakemake un fichier, il définira lui-même la séquence de commande à exécuter pour produire ce fichier. 
+Créer un fichier Snakefile. Ce fichier contient des "règles" permettant de définir comment passer d'un fichier à un autre. Ces règles sont dans l'ordre que vous voulez. En demandant à snakemake un fichier, il définira lui-même la séquence de commande à exécuter pour produire ce fichier. 
 
 ### Règle d'alignement 
 
@@ -118,7 +118,7 @@ Crée un fichier Snakefile. Ce fichier contient des "règles" permettant de déf
             "bwa mem genom/ecoli.fa {input} > {output}"
 
 #### Question 7: Tester votre règle
--p : Afficher les commandes
+-p : Afficher les commandes  
 -n : Ne pas les exécuter 
 
     snakemake -np sample3.sam  
