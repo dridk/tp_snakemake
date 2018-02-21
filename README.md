@@ -72,7 +72,7 @@ Alignement de *sample1.fastq*:
 
 Conversion du SAM en BAM: 
 
-    samtools view -b sample1.sam > sample1.bam
+    samtools view -bS sample1.sam > sample1.bam
 
 ### Question 3:
 - Afficher le contenu du fichier SAM et du fichier BAM avec **less** 
