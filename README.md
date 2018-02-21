@@ -1,176 +1,195 @@
-## Objectif 
-5 colonies de bactéries E.coli ont été séquencées. À partir des 5 fichiers fastq, réaliser un pipeline et identifier les mutations spécifiques à chaque colonie ( Les données ont été simulées avec [wgsim](https://github.com/lh3/wgsim) ).
+# Objectif 
+5 colonies de bactéries E.coli ont été séquencées en NGS.    
+Après avoir aligné ces 5 fichiers fastq sur un génome de référence, vous devez identifier les mutations spécifiques à chaque colonie ( Les données ont été simulées avec [wgsim](https://github.com/lh3/wgsim) pour permettre un calcul rapide sur une machine standard ).     
+Pour cela, vous devez réaliser un pipeline snakemake décrivant l'ensemble des étapes pour passer d'un fichier [fastq](https://fr.wikipedia.org/wiki/FASTQ) à un fichier [vcf](https://en.wikipedia.org/wiki/Variant_Call_Format).    
+Les étapes de votre pipeline sont les suivantes :    
 
-## Installation des dépendances
-Pour cet exercice, vous avez besoin de : samtools, bwa,bcftools,snakemake. 
+- Indexer le génome de référence avec **bwa** index
+- Aligner le fastq sur le génome de référence avec **bwa** (*.fastq > *.sam)
+- Convertir le SAM en BAM avec **samtools** (*.sam > *.bam)
+- Trier par position les reads alignés avec **samtools** ( *.bam > *.sort.bam)
+- Indexer le bam avec **samtools** ( *.bam > *.bai )
+- Énumérer les bases séquencées à chaque position **samtools pileup** ( *.sort.bam > *.bcf)
+- Détecter les variants significatifs avec **bcftools call** (*.bcf > *.vcf) 
+- Compresser les vcf avec **bgzip** (*.vcf > vcf.gz)
+- Indexer les vcf avec **tabix** (*.vcf.gz > *.vcf.gz.tbi)
 
-    sudo apt-get install samtools bwa bcftools snakemake
+# Installation des dépendances
+Pour cet exercice, vous avez besoin de : samtools, bwa, bcftools, tabix, snakemake. 
 
-Dans la situation (très fréquente) ou vous n'êtes pas administrateur, installer vos dépendances par l'intermédiaire de [conda](https://conda.io/miniconda.html):
+## Installation en admin
+    sudo apt-get install samtools bwa bcftools tabix snakemake
+
+## Installation via un environement virtuel (conseillé++)
+Dans la situation (très fréquente) ou vous n'êtes pas administrateur, installer vos dépendances par l'intermédiaire de [conda](https://conda.io/miniconda.html).     
+Pour installer conda :    
 
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     chmod +x Miniconda3-latest-Linux-x86_64.sh      
     ./Miniconda3-latest-Linux-x86_64.sh
 
-Ajouter les dépôts bioconda pour avoir accès au catalogue des outils de bioinformatique
+Ajouter les dépôts bioconda pour avoir accès au catalogue des outils de bioinformatique:
 
     conda config --add channels defaults
     conda config --add channels conda-forge
     conda config --add channels bioconda
 
-### Crée un environnement appelé "master_big" 
+Crée un environnement appelé "master_big":
+
         conda create -n master_big
 
-### Activer l'environnement   
+Activer/Désactiver l'environnement: 
+
        source activate master_big
+       source deactivate
 
-### Installer les applications requises   
-      conda install bwa samtools snakemake bcftools 
+Installer les applications dans l'environnement:  
 
-### Télécharger les données du TP: 
+      conda install bwa samtools snakemake bcftools tabix
+
+Télécharger les données du TP: 
+
     git clone git@github.com:dridk/tp_snakemake.git
 
-#### Question 1: 
+### Question 1: 
 - Combien de bases dans genom/ecoli.fa ? 
 - Combien de reads dans sample1.fastq ? 
 
-## Création d'un pipeline brut
-Les étapes pour obtenir les variants de l'échantillon (sample1.fastq) sont les suivantes : 
+# Ligne de commande des étapes 
+Les commandes de chaque étape sont décrite ci-dessous.    
+Dans un premier temps, essayer manuellement d’exécuter chaque commande à partir du fichier *sample1.fastq*.
 
-- Indexer le génome avec bwa index
-- Aligner un fastq sur le génome de référence avec bwa (*.fastq > *.sam)
-- Convertir le SAM en BAM avec samtools (*.sam > *.bam)
-- Trier par position les reads alignés avec samtools ( *.bam > *.sort.bam)
-- Indexer le bam avec samtools ( *.bam > *.bai )
-- Énumérer les bases à chaque position - pileup ( *.sort.bam > *.bcf)
-- Détecter les variants significatifs - variant calling (*.bcf > *.vcf) 
-
-### indexer le génome ecoli.fa 
+Indexer le génome *ecoli.fa*: 
 
     bwa index genom/ecoli.fa 
 
-#### Question 2:
-- Quelle est l'utilité d'un index ? 
+### Question 2:
+- Pourquoi indexer le génome ? 
 
-### Alignement de sample1.fastq 
+Alignement de *sample1.fastq*: 
 
-    bwa mem genom/ecoli.fa sample1.fastq > sample1.sam 
+    bwa mem genom/ecoli.fa raw/sample1.fastq > sample1.sam 
 
-#### Question 3 : 
-Afficher la position (colonne 4) et la séquence (colonne 10) des reads alignés.
-Qu'observez vous au niveau des positions ?    
-
-    samtools view -F4 sample1.sam |cut -f4,10
-
-### Conversion du sam en bam 
+Conversion du SAM en BAM: 
 
     samtools view -b sample1.sam > sample1.bam
 
-#### Question 4 : 
-Quel est l’intérêt d'un fichier binaire ?   
+### Question 3:
+- Afficher le contenu du fichier SAM et du fichier BAM avec **less** 
+- Quel est la différence entre un fichier SAM et BAM ?  
+- Afficher la position (colonne 4) et la séquence (colonne 10) des reads alignés. `` samtools view -F4 sample1.bam |cut -f4,10 ``
+Qu'observez vous au niveau des positions ? 
 
-### Trie du bam par position 
+Trier le bam par position: 
 
     samtools sort sample1.bam > sample1.sort.bam 
 
-#### Question 5: 
-Refaire la commande de la question 3 sur le fichier sample1.sort.bam généré. 
+### Question 4: 
+- Refaire la commande `` samtools view -F4 sample1.sort.bam |cut -f4,10 ``? 
+- Qu'observez vous ? 
 
-### Index du bam 
+Indexer le bam:
 
     samtools index sample1.sort.bam 
 
-### Visualiser votre alignement (hors pipeline)
+### Question 5:
+Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/software/igv/) ou samtools:    
+    `` samtools tview sample1.sort.bam ``      
+    `` samtools tview sample1.sort.bam genom/ecoli.fa `` 
 
-    samtools tview sample1.sort.bam
-    samtools tview sample1.sort.bam genom/ecoli.fa
-
-#### Question 6:
 - Pour quelle raison observez vous autant de variation ? 
 - Évaluer la profondeur ? 
 - Évaluer la couverture ? 
 
-### Variant mpileup
+Faire le mpileup :   
 Pour chaque position nucléotidique du génome, cette commande dénombre les nucléotides observés sur les reads recouvrant cette position. 
 
     samtools mpileup -g -f genom/ecoli.fa sample1.sort.bam > sample1.bcf
 
-### Variant calling 
+Faire le variant calling :    
 Cette commande détecte les vrais variants du bruit de fond grâce à un modèle statistique. 
 
     bcftools call -c -v sample1.bcf > sample1.vcf 
 
-Question: 
-- Quel(s) variant(s) avez-vous trouvé pour l'échantillon sample1 ? 
+Compresser et indexer le fichier 
+
+    bgzip sample1.vcf     # Produit un vcf.gz
+    tabix sample1.vcf.gz  # Produit un vcf.gz.tbi
+
+### Question 6:
+- Afficher le fichier *sample1.vcf*.
+- Quel(s) variant(s) avez-vous trouvé pour l'échantillon *sample1* ? 
 
 ## Création du pipeline avec snakemake 
 
-Créer un fichier Snakefile. Ce fichier contient des "règles" permettant de définir comment passer d'un fichier à un autre. Ces règles sont dans l'ordre que vous voulez. En demandant à snakemake un fichier, il définira lui-même la séquence de commande à exécuter pour produire ce fichier. 
+Créer un fichier *Snakefile*. Ce fichier contient des "*règles*" ou "*rule*" permettant de définir comment passer d'un fichier à un autre. Ces règles sont dans l'ordre que vous voulez. En demandant à **snakemake** de produire, par exemple le fichier *sample2.bam*, il trouvera et exécutera lui même l'ensemble des règles pour produire ce fichier.    
 
-### Règle d'alignement 
+Exemple avec la règle de conversion d'un sam en bam:
 
-    rule alignement:
+    rule sam2bam:
         input:
-            "{sample}.fastq"
-        output:
             "{sample}.sam"
+        output:
+            "{sample}.bam"
         shell:
-            "bwa mem genom/ecoli.fa {input} > {output}"
+            "samtools view -b {input} > {output}"
 
-#### Question 7: Tester votre règle
--p : Afficher les commandes  
--n : Ne pas les exécuter 
+Cette règle peut se lire ainsi :    
+" Pour produire le fichier *{qqch}.bam*, j'ai besoin du fichier *{qqch}.sam*. Si le fichier *{qqch}.sam* est absent trouver la règle pour le produire. Et ainsi de suite. 
 
-    snakemake -np sample3.sam  
-    snakemake -np sample4.sam 
+### Question 7:
+- Créer la règle d'alignement vu plus haut.  
+- Tester votre règle avec la commande suivante (-n: ne rien faire  -p afficher les commandes)    
+    ``snakemake -np sample3.sam``     
+    ``snakemake -np sample4.sam ``
 
-#### Question 8 : Créer toutes les règles jusqu'au VCF
 
-Essayer de créer les autres règles jusqu'au vcf en partant des commandes définies plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
-Vous pouvez alors demander à snakemake comment générer un fichier en lui passant le nom en argument:
+### Question 8: 
 
-    snakemake -np sample1.vcf
-    snakemake -np sample2.vcf
-    snakemake -np sample3.vcf
-    snakemake -np sample1.vcf sample2.vcf sample3.vcf sample4.vcf
+Essayer de créer les autres règles jusqu'au *{sample}.vcf.gz* à l'aide des commandes définies plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
+Tester alors votre pipeline :     
 
-## Exécuter sur 4 coeurs
+    snakemake -np sample1.vcf.gz
+    snakemake -np sample2.vcf.gz
+    snakemake -np sample3.vcf.gz
+    snakemake -np sample1.vcf.gz sample2.vcf.gz sample3.vcf.gz 
 
-    snakemake -p sample1.vcf sample2.vcf sample3.vcf sample4.vcf --cores 4
+Exécuter votre pipeline sur 4 coeurs:
 
-## Si un fichier est manquant ?
+    snakemake -p sample1.vcf.gz sample2.vcf.gz sample3.vcf.gz --cores 4
 
-    rm sample2.sort.bam
-    snakemake -p sample2.vcf
+Forcer l'exécution complète de tout le pipeline (-F) : 
 
-## Forcer l'exécution de toutes les règles  
+    snakemake -pF sample1.vcf.gz sample2.vcf.gz sample3.vcf.gz --cores 4
 
-    snakemake -pF sample1.vcf 
+### Question 9:
+- Modifier n'importe quel fichier et ré-exécuter snakemake. Que se passe t-il ? 
 
-## Combiner les vcfs 
-Créer une dernière règle pour combiner l'ensemble des fichiers vcf. Et mettez celle-ci tout en haut de votre fichier Snakefile. 
+Créer une dernière règle pour combiner l'ensemble des fichiers vcf.gz dans un seul fichier allsample.vcf.gz.
 
     rule mergeAll : 
         input:
-            "sample1.vcf",
-            "sample2.vcf",
-            "sample3.vcf",
-            "sample4.vcf",
-            "sample5.vcf"
+            "sample1.vcf.gz",
+            "sample2.vcf.gz",
+            "sample3.vcf.gz",
+            "sample4.vcf.gz",
+            "sample5.vcf.gz"
             
         output:
-            "allsample.vcf"
+            "allsample.vcf.gz"
         shell:
-            "cat {input} > {output}"
+            "bcftools merge {input}|bgzip> {output}"
 
 Afficher le graphe d'exécution. Vous aurez peut-être besoin de graphviz. 
 
-    sudo apt install graphviz
-    snakemake allsample.vcf --dag|dot|display 
+    conda install graphviz
+    snakemake allsample.vcf.gz --dag|dot|display 
+
+![Graphe du pipeline](https://github.com/dridk/tp_snakemake/blob/master/graph.png)
 
 Exécuter l'ensemble du pipeline : 
 
     snakemake -p --cores 4 
 
-#### Question 9: 
-Quelles sont les mutations retrouvées ? 
+#### Question 10: 
+Quelles sont les mutations retrouvées dans les 5 colonies bactériennes ? 
