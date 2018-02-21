@@ -27,8 +27,8 @@ rule sortbam:
 	shell:
 		"samtools sort {input} > {output}"
 
-# mpillup
-rule mpillup:
+# mpileup
+rule mpileup:
 	input:
 		"{sample}.sort.bam"
 	output:
