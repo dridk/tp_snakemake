@@ -68,7 +68,7 @@ Indexer le génome *ecoli.fa*:
 
 Alignement de *sample1.fastq*: 
 
-    bwa mem genom/ecoli.fa raw/sample1.fastq > sample1.sam 
+    bwa mem genom/ecoli.fa sample1.fastq > sample1.sam 
 
 Conversion du SAM en BAM: 
 
