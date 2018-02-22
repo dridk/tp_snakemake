@@ -15,12 +15,9 @@ Les étapes de votre pipeline sont les suivantes :
 - Indexer les vcf avec **tabix** (*.vcf.gz > *.vcf.gz.tbi)
 
 # Installation des dépendances
-Pour cet exercice, vous avez besoin de : samtools, bwa, bcftools, tabix, snakemake. 
+Pour cet exercice, vous avez besoin de : samtools, bwa, bcftools, tabix, snakemake.
 
-## Installation en admin
-    sudo apt-get install samtools bwa bcftools tabix snakemake
-
-## Installation via un environement virtuel (conseillé++)
+## Installation via conda
 Dans la situation (très fréquente) ou vous n'êtes pas administrateur, installer vos dépendances par l'intermédiaire de [conda](https://conda.io/miniconda.html).     
 Pour installer conda :    
 
