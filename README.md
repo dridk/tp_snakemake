@@ -186,7 +186,7 @@ Afficher le graphe d'exécution. Vous aurez peut-être besoin de graphviz.
 
 Exécuter l'ensemble du pipeline : 
 
-    snakemake -p --cores 4 
+    snakemake -p --cores 4 allsample.vcf.gz
 
 #### Question 10: 
 Quelles sont les mutations retrouvées dans les 5 colonies bactériennes ? 
