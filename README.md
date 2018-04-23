@@ -1,6 +1,6 @@
 # Objectif 
 5 colonies de bactéries E.coli ont été séquencées en NGS.    
-Après avoir aligné ces 5 fichiers fastq sur un génome de référence, vous devez identifier les mutations spécifiques à chaque colonie ( Les données ont été simulées avec [wgsim](https://github.com/lh3/wgsim) pour permettre un calcul rapide sur une machine standard ).     
+Après avoir aligné ces 5 fichiers fastq sur un génome de référence, vous devez identifier les mutations spécifiques à chaque colonie ( les données ont été simulées avec [wgsim](https://github.com/lh3/wgsim) pour permettre un calcul rapide sur une machine standard ).     
 Pour cela, vous devez réaliser un pipeline snakemake décrivant l'ensemble des étapes pour passer d'un fichier [fastq](https://fr.wikipedia.org/wiki/FASTQ) à un fichier [vcf](https://en.wikipedia.org/wiki/Variant_Call_Format).    
 Les étapes de votre pipeline sont les suivantes :    
 
@@ -8,7 +8,7 @@ Les étapes de votre pipeline sont les suivantes :
 - Aligner le fastq sur le génome de référence avec **bwa** (*.fastq > *.sam)
 - Convertir le SAM en BAM avec **samtools** (*.sam > *.bam)
 - Trier par position les reads alignés avec **samtools** ( *.bam > *.sort.bam)
-- Indexer le bam avec **samtools** ( *.bam > *.bai )
+- Indexer le bam avec **samtools** ( *.sort.bam > *.bai )
 - Énumérer les bases séquencées à chaque position **samtools pileup** ( *.sort.bam > *.bcf)
 - Détecter les variants significatifs avec **bcftools call** (*.bcf > *.vcf) 
 - Compresser les vcf avec **bgzip** (*.vcf > vcf.gz)
@@ -54,7 +54,7 @@ Télécharger les données du TP:
 
 # Ligne de commande des étapes 
 Les commandes de chaque étape sont décrite ci-dessous.    
-Dans un premier temps, essayer manuellement d’exécuter chaque commande à partir du fichier *sample1.fastq*.
+Dans un premier temps, essayez manuellement d’exécuter chaque commande à partir du fichier *sample1.fastq*.
 
 Indexer le génome *ecoli.fa*: 
 
@@ -63,11 +63,11 @@ Indexer le génome *ecoli.fa*:
 ### Question 2:
 - Pourquoi indexer le génome ? 
 
-Alignement de *sample1.fastq*: 
+Aligner *sample1.fastq*: 
 
     bwa mem genom/ecoli.fa sample1.fastq > sample1.sam 
 
-Conversion du SAM en BAM: 
+Convertir le SAM en BAM: 
 
     samtools view -bS sample1.sam > sample1.bam
 
@@ -94,7 +94,7 @@ Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/softwa
     `` samtools tview sample1.sort.bam ``      
     `` samtools tview sample1.sort.bam genom/ecoli.fa `` 
 
-- Pour quelle raison observez vous autant de variation ? 
+- Pour quelle raison observez vous autant de variations ? 
 - Évaluer la profondeur ? 
 - Évaluer la couverture ? 
 
@@ -115,7 +115,7 @@ Compresser et indexer le fichier
 
 ### Question 6:
 - Afficher le fichier *sample1.vcf*.
-- Quel(s) variant(s) avez-vous trouvé pour l'échantillon *sample1* ? 
+- Quel(s) variant(s) avez-vous trouvé(s) pour l'échantillon *sample1* ? 
 
 ## Création du pipeline avec snakemake 
 
@@ -136,22 +136,22 @@ Cette règle peut se lire ainsi :
 
 ### Question 7:
 - Créer la règle d'alignement vu plus haut.  
-- Tester votre règle avec la commande suivante (-n: ne rien faire  -p afficher les commandes)    
+- Tester votre règle avec la commande suivante (-n: ne rien faire ; -p afficher les commandes)    
     ``snakemake -np sample3.sam``     
     ``snakemake -np sample4.sam ``
 
 
 ### Question 8: 
 
-Essayer de créer les autres règles jusqu'au *{sample}.vcf.gz* à l'aide des commandes définies plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
-Tester alors votre pipeline :     
+Essayez de créer les autres règles jusqu'au *{sample}.vcf.gz* à l'aide des commandes définies plus haut. Si vous n'y arrivez pas, vous pouvez vous aider, de la [doc officielle](https://snakemake.readthedocs.io/en/stable/) et en dernier recours de la [correction](https://github.com/dridk/tp_snakemake/blob/master/Snakefile.correction).    
+Tester le pipeline :     
 
     snakemake -np sample1.vcf.gz
     snakemake -np sample2.vcf.gz
     snakemake -np sample3.vcf.gz
     snakemake -np sample1.vcf.gz sample2.vcf.gz sample3.vcf.gz 
 
-Exécuter votre pipeline sur 4 coeurs:
+Exécuter le pipeline sur 4 coeurs:
 
     snakemake -p sample1.vcf.gz sample2.vcf.gz sample3.vcf.gz --cores 4
 
@@ -162,7 +162,7 @@ Forcer l'exécution complète de tout le pipeline (-F) :
 ### Question 9:
 - Modifier n'importe quel fichier et ré-exécuter snakemake. Que se passe t-il ? 
 
-Créer une dernière règle pour combiner l'ensemble des fichiers vcf.gz dans un seul fichier allsample.vcf.gz.
+Créer une dernière règle pour combiner l'ensemble des fichiers vcf.gz dans un seul fichier *allsample.vcf.gz*.
 
     rule mergeAll : 
         input:
