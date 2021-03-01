@@ -82,10 +82,10 @@ Indexer le bam:
 
 ### Question 4:
 Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/software/igv/) ou samtools:    
-    `` samtools tview sample1.sort.bam ``      
-    `` samtools tview sample1.sort.bam genom/ecoli.fa `` 
+    `` samtools tview sample1.bam ``      
+    `` samtools tview sample1.bam genom/ecoli.fa `` 
 
-- Pour quelle raison observez vous autant de variation ? 
+- A quoi correspond toutes les variations observés  ? 
 - Évaluer la profondeur ? 
 
 ### Question 5:
