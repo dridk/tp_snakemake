@@ -78,7 +78,7 @@ Trie du bam par ordre de position et conversion en fichier BAM:
 
 Indexer le bam:
 
-    samtools index sample1.sort.bam 
+    samtools index sample1.bam 
 
 ### Question 4:
 Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/software/igv/) ou samtools:    
