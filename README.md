@@ -7,12 +7,10 @@ Les étapes de votre pipeline sont les suivantes :
 - Indexer le génome de référence avec **bwa** index
 - Aligner le fastq sur le génome de référence avec **bwa** (*.fastq > *.sam)
 - Convertir le SAM en BAM avec **samtools** (*.sam > *.bam)
-- Trier par position les reads alignés avec **samtools** ( *.bam > *.sort.bam)
+- Trier par position les reads alignés avec **samtools** L *.bam > *.sort.bam)
 - Indexer le bam avec **samtools** ( *.bam > *.bai )
-- Énumérer les bases séquencées à chaque position **samtools pileup** ( *.sort.bam > *.bcf)
-- Détecter les variants significatifs avec **bcftools call** (*.bcf > *.vcf) 
-- Compresser les vcf avec **bgzip** (*.vcf > vcf.gz)
-- Indexer les vcf avec **tabix** (*.vcf.gz > *.vcf.gz.tbi)
+- Appeler les variants avec freebayes (*.bam > *.vcf ) 
+- Conserver les variants de bonne qualité ( *.vcf > *.filter.vcf )
 
 # Installation des dépendances
 Pour cet exercice, vous avez besoin de : samtools, bwa, bcftools, tabix, snakemake.
@@ -52,6 +50,8 @@ Télécharger les données du TP:
 - Combien de bases dans genom/ecoli.fa ? 
 - Combien de reads dans sample1.fastq ? 
 
+    > Indice : Utiliser cat, grep et wc 
+
 # Ligne de commande des étapes 
 Les commandes de chaque étape sont décrite ci-dessous.    
 Dans un premier temps, essayer manuellement d’exécuter chaque commande à partir du fichier *sample1.fastq*.
@@ -67,29 +67,20 @@ Alignement de *sample1.fastq*:
 
     bwa mem genom/ecoli.fa sample1.fastq > sample1.sam 
 
-Conversion du SAM en BAM: 
+Trie du bam par ordre de position et conversion en fichier BAM: 
 
-    samtools view -bS sample1.sam > sample1.bam
+    samtools sort -O BAM sample1.sam > sample1.bam
 
 ### Question 3:
 - Afficher le contenu du fichier SAM et du fichier BAM avec **less** 
 - Quel est la différence entre un fichier SAM et BAM ?  
 - Afficher la position (colonne 4) et la séquence (colonne 10) des reads alignés. `` samtools view -F4 sample1.bam |cut -f4,10 ``
-Qu'observez vous au niveau des positions ? 
-
-Trier le bam par position: 
-
-    samtools sort sample1.bam > sample1.sort.bam 
-
-### Question 4: 
-- Refaire la commande `` samtools view -F4 sample1.sort.bam |cut -f4,10 ``? 
-- Qu'observez vous ? 
 
 Indexer le bam:
 
     samtools index sample1.sort.bam 
 
-### Question 5:
+### Question 4:
 Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/software/igv/) ou samtools:    
     `` samtools tview sample1.sort.bam ``      
     `` samtools tview sample1.sort.bam genom/ecoli.fa `` 
@@ -97,12 +88,11 @@ Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/softwa
 - Pour quelle raison observez vous autant de variation ? 
 - Évaluer la profondeur ? 
 
-Faire le variant calling :    
+### Question 5:
+
 Faire le variant calling avec freebayes.
 
-    freebayes -f genom/ecoli.fa sample sort.bam >sample.vcf
-
-
+    freebayes -f genom/ecoli.fa sample1.bam >sample.vcf
 
 Compresser et indexer le fichier 
 
