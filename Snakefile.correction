@@ -16,34 +16,16 @@ rule sam2bam:
 	output:
 		"{sample}.bam"
 	shell:
-		"samtools view -b {input} > {output}"
-
-# Sort du bam 
-rule sortbam: 
-	input:
-		"{sample}.bam"
-	output:
-		"{sample}.sort.bam"
-	shell:
-		"samtools sort {input} > {output}"
-
-# mpileup
-rule mpileup:
-	input:
-		"{sample}.sort.bam"
-	output:
-		"{sample}.bcf"
-	shell:
-		"samtools mpileup -g -f genom/ecoli.fa {input} > {output}"
+		"samtools sort -O BAM {input} > {output}; samtools index {output}"
 
 # variant calling 
 rule variantCalling:
 	input:
-		"{sample}.bcf"
+		"{sample}.bam"
 	output:
 		"{sample}.vcf"
 	shell:
-		"bcftools call -c -v {input} > {output}"
+		"freebayes -f genom/ecoli.fa {input} > {output}"
 
 
 rule bgzip:
