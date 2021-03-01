@@ -96,17 +96,13 @@ Visualiser votre alignement avec [IGV](http://software.broadinstitute.org/softwa
 
 - Pour quelle raison observez vous autant de variation ? 
 - Évaluer la profondeur ? 
-- Évaluer la couverture ? 
-
-Faire le mpileup :   
-Pour chaque position nucléotidique du génome, cette commande dénombre les nucléotides observés sur les reads recouvrant cette position. 
-
-    samtools mpileup -g -f genom/ecoli.fa sample1.sort.bam > sample1.bcf
 
 Faire le variant calling :    
-Cette commande détecte les vrais variants du bruit de fond grâce à un modèle statistique. 
+Faire le variant calling avec freebayes.
 
-    bcftools call -c -v sample1.bcf > sample1.vcf 
+    freebayes -f genom/ecoli.fa sample sort.bam >sample.vcf
+
+
 
 Compresser et indexer le fichier 
 
